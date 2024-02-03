@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../handler.ts"],
+  "sourcesContent": ["export const handler = async (event: any, context: any): Promise<any> => {\n  try {\n    console.log(event, '<< event');\n    if (event.info.parentTypeName === 'Mutation') {\n      switch (event.info.fieldName) {\n        case 'publish2channel':\n          const returnMe = {\n            name: event.arguments.name,\n            data: event.arguments.data\n          };\n          console.log(returnMe, '< returnme');\n          return returnMe;\n      }\n    }\n  } catch (e) {\n    console.log(e);\n  }\n};\n"],
+  "mappings": "yaAAA,IAAAA,EAAA,GAAAC,EAAAD,EAAA,aAAAE,IAAA,eAAAC,EAAAH,GAAO,IAAME,EAAU,MAAOE,EAAYC,IAA+B,CACvE,GAAI,CAEF,GADA,QAAQ,IAAID,EAAO,UAAU,EACzBA,EAAM,KAAK,iBAAmB,WAChC,OAAQA,EAAM,KAAK,UAAW,CAC5B,IAAK,kBACH,IAAME,EAAW,CACf,KAAMF,EAAM,UAAU,KACtB,KAAMA,EAAM,UAAU,IACxB,EACA,eAAQ,IAAIE,EAAU,YAAY,EAC3BA,CACX,CAEJ,OAAS,EAAG,CACV,QAAQ,IAAI,CAAC,CACf,CACF",
+  "names": ["handler_exports", "__export", "handler", "__toCommonJS", "event", "context", "returnMe"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../handler.ts"],
+  "sourcesContent": ["export const handler = async (event: any, context: any): Promise<any> => {\n  try {\n    if (event.info.parentTypeName === 'Subscription') {\n      switch (event.info.fieldName) {\n        case 'subscribe2channel':\n          return {\n            name: 'name',\n            data: 'data'\n          };\n      }\n    }\n  } catch (e) {\n    console.log(e);\n  }\n};\n"],
+  "mappings": "yaAAA,IAAAA,EAAA,GAAAC,EAAAD,EAAA,aAAAE,IAAA,eAAAC,EAAAH,GAAO,IAAME,EAAU,MAAOE,EAAYC,IAA+B,CACvE,GAAI,CACF,GAAID,EAAM,KAAK,iBAAmB,eAChC,OAAQA,EAAM,KAAK,UAAW,CAC5B,IAAK,oBACH,MAAO,CACL,KAAM,OACN,KAAM,MACR,CACJ,CAEJ,OAAS,EAAG,CACV,QAAQ,IAAI,CAAC,CACf,CACF",
+  "names": ["handler_exports", "__export", "handler", "__toCommonJS", "event", "context"]
+}

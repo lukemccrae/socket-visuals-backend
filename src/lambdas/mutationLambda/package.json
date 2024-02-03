@@ -1,5 +1,5 @@
 {
-  "name": "subscription-resolver",
+  "name": "mutation-resolver",
   "version": "1.0.0",
   "license": "",
   "description": "Description of your Lambda function",

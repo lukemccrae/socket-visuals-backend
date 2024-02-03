@@ -1,8 +1,25 @@
-type Subscription {
-  messageReceived: MessageType
+scalar AWSJSON
+directive @aws_subscribe(mutations: [String!]!) on FIELD_DEFINITION
+
+type Channel {
+  name: String!
+  data: String!
 }
 
-type MessageType {
-  content: String
-  sender: String
+type Mutation {
+  publish2channel(name: String!, data: String!): Channel
+}
+
+type Query {
+  getChannel: Channel
+}
+
+type Subscription {
+  subscribe2channel: Channel @aws_subscribe(mutations: ["publish2channel"])
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
 }

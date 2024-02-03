@@ -3,28 +3,31 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cdk from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { type Construct } from 'constructs';
-
 export class SocketVisualsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Create an AppSync API with WebSocket support
-    const api = new appsync.GraphqlApi(this, 'MyGraphqlApi', {
-      name: 'SocketVisualsApi',
-      schema: appsync.SchemaFile.fromAsset(
-        'infra/graphql/graphql/schema.graphql'
-      ),
+    const api = new appsync.GraphqlApi(this, 'Api', {
+      name: 'WS-API',
+      schema: appsync.SchemaFile.fromAsset('infra/graphql/schema.graphql'),
       authorizationConfig: {
-        defaultAuthorization: {
-          authorizationType: appsync.AuthorizationType.API_KEY
-        }
+        // defaultAuthorization: {
+        //   authorizationType: AuthorizationType.API_KEY
+        // }
       }
     });
-
     // Attach the policy to your role
     const subscriptionLambdaRole = new iam.Role(
       this,
       'SubscriptionLambdaExecutionRole',
+      {
+        assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
+      }
+    );
+
+    const mutationLambdaRole = new iam.Role(
+      this,
+      'MutationLambdaExecutionRole',
       {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
       }
@@ -49,6 +52,7 @@ export class SocketVisualsStack extends cdk.Stack {
     });
 
     subscriptionLambdaRole.attachInlinePolicy(cloudwatchPolicy);
+    mutationLambdaRole.attachInlinePolicy(cloudwatchPolicy);
 
     // Define a Lambda function for handling subscriptions
     const subscriptionLambda = new lambda.Function(this, 'subscriptionLambda', {
@@ -58,23 +62,32 @@ export class SocketVisualsStack extends cdk.Stack {
       role: subscriptionLambdaRole
     });
 
-    // Create a new resolver for the subscription
-    const subscriptionResolver = new appsync.Resolver(
-      this,
-      'subscriptionResolver',
-      {
-        typeName: 'Subscription',
-        fieldName: 'onMessage',
-        dataSource: appsync.LambdaDataSource,
-        pipelineConfig: [
-          {
-            functions: [subscriptionLambda]
-          }
-        ]
-      }
+    // Define a Lambda function for handling mutation
+    const mutationLambda = new lambda.Function(this, 'mutationLambda', {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset('src/lambdas/mutationLambda/dist'),
+      role: mutationLambdaRole
+    });
+
+    const mutationDataSource = api.addLambdaDataSource(
+      'MutationDataSource',
+      mutationLambda
     );
 
-    // Attach the resolver to the API
-    api.addResolver(subscriptionResolver);
+    const subscriptionDataSource = api.addLambdaDataSource(
+      'SubscriptionDataSource',
+      subscriptionLambda
+    );
+
+    subscriptionDataSource.createResolver('subscribe2channel', {
+      typeName: 'Subscription',
+      fieldName: 'subscribe2channel'
+    });
+
+    mutationDataSource.createResolver('publish2channel', {
+      typeName: 'Mutation',
+      fieldName: 'publish2channel'
+    });
   }
 }
