@@ -8,13 +8,8 @@ export class SocketVisualsStack extends cdk.Stack {
     super(scope, id, props);
 
     const api = new appsync.GraphqlApi(this, 'Api', {
-      name: 'WS-API',
+      name: 'MIDISocketServer',
       schema: appsync.SchemaFile.fromAsset('infra/graphql/schema.graphql'),
-      authorizationConfig: {
-        // defaultAuthorization: {
-        //   authorizationType: AuthorizationType.API_KEY
-        // }
-      }
     });
     // Attach the policy to your role
     const subscriptionLambdaRole = new iam.Role(
@@ -32,27 +27,6 @@ export class SocketVisualsStack extends cdk.Stack {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
       }
     );
-
-    const cloudWatchLogsPolicy = new iam.PolicyDocument({
-      statements: [
-        new iam.PolicyStatement({
-          effect: iam.Effect.ALLOW,
-          actions: [
-            'logs:CreateLogGroup',
-            'logs:CreateLogStream',
-            'logs:PutLogEvents'
-          ],
-          resources: ['*'] // Adjust this to limit resources as needed
-        })
-      ]
-    });
-
-    const cloudwatchPolicy = new iam.Policy(this, 'CloudWatchLogsPolicy', {
-      document: cloudWatchLogsPolicy
-    });
-
-    subscriptionLambdaRole.attachInlinePolicy(cloudwatchPolicy);
-    mutationLambdaRole.attachInlinePolicy(cloudwatchPolicy);
 
     // Define a Lambda function for handling subscriptions
     const subscriptionLambda = new lambda.Function(this, 'subscriptionLambda', {
@@ -80,14 +54,14 @@ export class SocketVisualsStack extends cdk.Stack {
       subscriptionLambda
     );
 
-    subscriptionDataSource.createResolver('subscribe2channel', {
+    subscriptionDataSource.createResolver('subscribe2Notes', {
       typeName: 'Subscription',
-      fieldName: 'subscribe2channel'
+      fieldName: 'subscribe2Notes'
     });
 
-    mutationDataSource.createResolver('publish2channel', {
+    mutationDataSource.createResolver('publishNote', {
       typeName: 'Mutation',
-      fieldName: 'publish2channel'
+      fieldName: 'publishNote'
     });
   }
 }

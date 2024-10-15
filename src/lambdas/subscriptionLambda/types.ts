@@ -17,31 +17,31 @@ export type Scalars = {
   AWSJSON: { input: any; output: any; }
 };
 
-export type Channel = {
-  __typename?: 'Channel';
-  data: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  publish2channel?: Maybe<Channel>;
+  publishNote?: Maybe<NoteEvent>;
 };
 
 
-export type MutationPublish2channelArgs = {
-  data: Scalars['String']['input'];
-  name: Scalars['String']['input'];
+export type MutationPublishNoteArgs = {
+  note: Scalars['Int']['input'];
+  velocity: Scalars['Float']['input'];
+};
+
+export type NoteEvent = {
+  __typename?: 'NoteEvent';
+  note: Scalars['Int']['output'];
+  velocity: Scalars['Float']['output'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  getChannel?: Maybe<Channel>;
+  subscriberCount: Scalars['Int']['output'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
-  subscribe2channel?: Maybe<Channel>;
+  subscribe2Notes?: Maybe<NoteEvent>;
 };
 
 
@@ -117,8 +117,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   AWSJSON: ResolverTypeWrapper<Scalars['AWSJSON']['output']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  Channel: ResolverTypeWrapper<Channel>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
+  NoteEvent: ResolverTypeWrapper<NoteEvent>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Subscription: ResolverTypeWrapper<{}>;
@@ -128,8 +130,10 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AWSJSON: Scalars['AWSJSON']['output'];
   Boolean: Scalars['Boolean']['output'];
-  Channel: Channel;
+  Float: Scalars['Float']['output'];
+  Int: Scalars['Int']['output'];
   Mutation: {};
+  NoteEvent: NoteEvent;
   Query: {};
   String: Scalars['String']['output'];
   Subscription: {};
@@ -145,28 +149,28 @@ export interface AwsjsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTy
   name: 'AWSJSON';
 }
 
-export type ChannelResolvers<ContextType = any, ParentType extends ResolversParentTypes['Channel'] = ResolversParentTypes['Channel']> = {
-  data?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  publishNote?: Resolver<Maybe<ResolversTypes['NoteEvent']>, ParentType, ContextType, RequireFields<MutationPublishNoteArgs, 'note' | 'velocity'>>;
+};
+
+export type NoteEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['NoteEvent'] = ResolversParentTypes['NoteEvent']> = {
+  note?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  velocity?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  publish2channel?: Resolver<Maybe<ResolversTypes['Channel']>, ParentType, ContextType, RequireFields<MutationPublish2channelArgs, 'data' | 'name'>>;
-};
-
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getChannel?: Resolver<Maybe<ResolversTypes['Channel']>, ParentType, ContextType>;
+  subscriberCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  subscribe2channel?: SubscriptionResolver<Maybe<ResolversTypes['Channel']>, "subscribe2channel", ParentType, ContextType>;
+  subscribe2Notes?: SubscriptionResolver<Maybe<ResolversTypes['NoteEvent']>, "subscribe2Notes", ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   AWSJSON?: GraphQLScalarType;
-  Channel?: ChannelResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  NoteEvent?: NoteEventResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
 };

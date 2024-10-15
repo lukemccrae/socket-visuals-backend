@@ -1,21 +1,21 @@
 scalar AWSJSON
 directive @aws_subscribe(mutations: [String!]!) on FIELD_DEFINITION
 
-type Channel {
-  name: String!
-  data: String!
+type NoteEvent {
+  note: Int!
+  velocity: Float!
 }
 
 type Mutation {
-  publish2channel(name: String!, data: String!): Channel
-}
-
-type Query {
-  getChannel: Channel
+  publishNote(note: Int!, velocity: Float!): NoteEvent
 }
 
 type Subscription {
-  subscribe2channel: Channel @aws_subscribe(mutations: ["publish2channel"])
+  subscribe2Notes: NoteEvent @aws_subscribe(mutations: ["publishNote"])
+}
+
+type Query {
+  subscriberCount: Int!
 }
 
 schema {

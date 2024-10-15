@@ -2,10 +2,10 @@ export const handler = async (event: any, context: any): Promise<any> => {
   try {
     if (event.info.parentTypeName === 'Subscription') {
       switch (event.info.fieldName) {
-        case 'subscribe2channel':
+        case 'subscribe2Notes':
           return {
-            name: 'name',
-            data: 'data'
+            note: 0,
+            velocity: 0.0
           };
       }
     }

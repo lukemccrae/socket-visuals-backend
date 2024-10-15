@@ -10,6 +10,7 @@ for dir in *; do
   if [ -d "$dir" ] && [[ "$dir" == *Lambda ]]; then
     echo "Entering directory: $dir"
     cd "$dir"
+    yarn
     yarn build
     cd ..
   fi
