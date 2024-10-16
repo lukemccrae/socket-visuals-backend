@@ -1,14 +1,9 @@
-# Welcome to your CDK TypeScript project
+# Welcome to my repo!
 
-This is a blank project for CDK development with TypeScript.
+This project is part of a blog series on my Substack, check out the write up here
+https://lukemccrae.substack.com/p/turning-musical-instruments-into-d02
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Useful commands
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+* `yarn && yarn deploy`   deploy the project using the [default] aws profile
